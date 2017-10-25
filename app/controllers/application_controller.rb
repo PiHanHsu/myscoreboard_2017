@@ -8,13 +8,16 @@ class ApplicationController < ActionController::Base
   protected
 
     def configure_permitted_parameters
-      devise_parameter_sanitizer.for(:sign_up) << :username
-      devise_parameter_sanitizer.for(:sign_up) << :userid
-      devise_parameter_sanitizer.for(:sign_up) << :gender
 
-      devise_parameter_sanitizer.for(:account_update) << :username
-      devise_parameter_sanitizer.for(:account_update) << :userid
-      devise_parameter_sanitizer.for(:account_update) << :gender
+      devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :userid, :gender])
+      devise_parameter_sanitizer.permit(:account_update, keys: [:username, :userid, :gender])
+      #devise_parameter_sanitizer.for(:sign_up) << :username
+      #devise_parameter_sanitizer.for(:sign_up) << :userid
+      #devise_parameter_sanitizer.for(:sign_up) << :gender
+
+      #devise_parameter_sanitizer.for(:account_update) << :username
+      #devise_parameter_sanitizer.for(:account_update) << :userid
+      #devise_parameter_sanitizer.for(:account_update) << :gender
 
 
     end
