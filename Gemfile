@@ -35,7 +35,7 @@ gem 'capistrano-rails', :group => :development
 gem 'capistrano-passenger', :group => :development
 gem 'mysql2'
 
-gem 'aws-sdk-v1'
+gem 'aws-sdk', '~> 2.10.47'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 
