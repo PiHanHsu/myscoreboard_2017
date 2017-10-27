@@ -1,6 +1,6 @@
 
 # config valid only for current version of Capistrano
-lock '3.4.1'
+lock '3.10.0'
 
 `ssh-add` # 注意這是鍵盤左上角的「 `」不是單引號「 '」
 set :application, 'myscoreboard'
