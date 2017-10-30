@@ -16,7 +16,7 @@ json.teammates do
     json.username u.username
     json.user_id u.id
     json.gender u.gender
-    json.user_photo u.photo
+    json.user_photo u.head.url(:medium)
   end
 end
 
