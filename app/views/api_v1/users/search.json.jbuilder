@@ -3,6 +3,7 @@ json.results do
 
     json.id user.id
     json.username user.username
+    json.level user.level
     json.photo user.photo
 
   end

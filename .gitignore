@@ -22,3 +22,4 @@
 /config/s3.yml
 /config/email.yml
 /config/database.yml
+/.idea/

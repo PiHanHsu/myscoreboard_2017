@@ -75,7 +75,7 @@ class ApiV1::UsersController < ApiController
   end
 
   def user_params
-    params.permit(:email, :gender, :head, :username, :password)
+    params.permit(:email, :gender, :level, :head, :username, :password)
   end
 
 end

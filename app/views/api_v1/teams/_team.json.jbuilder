@@ -16,6 +16,7 @@ json.teammates do
     json.username u.username
     json.user_id u.id
     json.gender u.gender
+    json.level u.level
     json.user_photo u.head.url(:medium)
   end
 end

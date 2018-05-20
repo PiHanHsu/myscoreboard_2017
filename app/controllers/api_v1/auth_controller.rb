@@ -1,94 +1,101 @@
 class ApiV1::AuthController < ApiController
 
-   before_action :authenticate_user!, :only => [:logout]
+  before_action :authenticate_user!, :only => [:logout]
 
 # 註冊
-def signup
-  success = false
-  #POST /api/v1/signup
+  def signup
+    success = false
+    #POST /api/v1/signup
 
-  if params[:email] && params[:password]
+    if params[:email] && params[:password]
 
-    user = User.new(:email => params[:email], :password => params[:password],
-                    :username => params[:username], :gender => params[:gender], :head => params[:head])
+      user = User.new(:email    => params[:email], :password => params[:password],
+                      :username => params[:username], :gender => params[:gender], :head => params[:head])
 
-    if user.save
-      render :json => { :auth_token => user.authentication_token }, :status => 200
-    else
-      render :json => {}, :status => 400
-    end
+      if user.save
+        render :json => { :auth_token => user.authentication_token }, :status => 200
+      else
+        render :json => {}, :status => 400
+      end
 
-  elsif params[:access_token]
-    fb_data = User.get_fb_data( params[:access_token] )
+    elsif params[:access_token]
+      fb_data = User.get_fb_data(params[:access_token])
       if fb_data
         auth_hash = OmniAuth::AuthHash.new({
-          uid: fb_data["id"],
-          info: {
-            email: fb_data["email"],
-            gender: fb_data["gender"],
-            name: fb_data["name"],
-            picture: fb_data["picture"]
-          },
-          credentials: {
-           token: params[:access_token]
-          }
-        })
-        @user = User.from_omniauth_api(auth_hash)
+                                             uid:         fb_data["id"],
+                                             info:        {
+                                               email:   fb_data["email"],
+                                               gender:  fb_data["gender"],
+                                               name:    fb_data["name"],
+                                               picture: fb_data["picture"]
+                                             },
+                                             credentials: {
+                                               token: params[:access_token]
+                                             }
+                                           })
+        @user     = User.from_omniauth_api(auth_hash)
       end
-        success = fb_data && @user.persisted?
+      success = fb_data && @user.persisted?
 
-        if success
-          render :login  # user jbuilder
-        else
-          render :json => { :message => "email or password is not correct" }, :status => 401
-        end
+      if success
+        render :login # user jbuilder
+      else
+        render :json => { :message => "email or password is not correct" }, :status => 401
+      end
+    end
   end
-end
 
 # 登入
-    def login
-     success = false
+  def login
+    success = false
 
-     if params[:email] && params[:password]
-       @user = User.find_by_email( params[:email] )
-       success = @user && @user.valid_password?( params[:password] )
-
-     elsif params[:access_token]
-       fb_data = User.get_fb_data( params[:access_token] )
-         if fb_data
-           auth_hash = OmniAuth::AuthHash.new({
-             uid: fb_data["id"],
-             info: {
-                   email: fb_data["email"],
-                   gender: fb_data["gender"],
-                   name: fb_data["name"],
-                   picture: fb_data["picture"]
-             },
-             credentials: {
-               token: params[:access_token]
-             }
-           })
-           @user = User.from_omniauth(auth_hash)
-         end
-       success = fb_data && user.persisted?
-     end
-
-        if success
-         # user jbuilder
-        else
-         render :json => { :message => "email or password is not correct" }, :status => 401
-        end
-
+    if params[:email] && params[:password]
+      @user   = User.find_by_email(params[:email])
+      success = @user && @user.valid_password?(params[:password])
+    elsif params[:access_token]
+      fb_data = User.get_fb_data(params[:access_token])
+      if fb_data
+        auth_hash = OmniAuth::AuthHash.new(
+          {
+            uid:         fb_data["id"],
+            info:        {
+              email:   fb_data["email"],
+              gender:  fb_data["gender"],
+              name:    fb_data["name"],
+              picture: fb_data["picture"]
+            },
+            credentials: {
+              token: params[:access_token]
+            }
+          }
+        )
+        @user     = User.from_omniauth(auth_hash)
+      end
+      success = fb_data && user.persisted?
     end
 
+    if success
+      @user.teams.each do |team|
+        team.users.each do |user|
+          user.photo = user.get_photo_url
+        end
+      end
+
+      # user jbuilder
+    else
+      render :json => { :message => "email or password is not correct" }, :status => 401
+    end
+
+  end
+
 # 登出
-   def logout
-     user = current_user
+  def logout
+    user = current_user
 
-     user.generate_authentication_token
-     user.save!
+    user.generate_authentication_token
+    user.save!
 
-     render :json => { :message => "ok" }
-   end
+    render :json => { :message => "ok" }
+  end
 
- end
+end
