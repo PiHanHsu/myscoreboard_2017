@@ -5,7 +5,7 @@ lock '3.10.0'
 `ssh-add` # 注意這是鍵盤左上角的「 `」不是單引號「 '」
 set :application, 'myscoreboard'
 
-set :repo_url, 'git@github.com:PiHanHsu/myscoreboard_2017.git'
+set :repo_url, 'https://bitbucket.org/pihanhsu/myscoreboard_2017.git'
 set :deploy_to, '/home/deploy/myscoreboard'
 set :keep_releases, 5
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'config/facebook.yml', 'config/s3.yml', 'config/email.yml')  # 如果有 facebook.yml 或 email.yml 想要連結的話，也要加進來
